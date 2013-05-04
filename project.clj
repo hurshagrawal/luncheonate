@@ -7,5 +7,6 @@
                  [com.taoensso/carmine "1.7.0"]
                  [ring/ring-jetty-adapter "1.1.8"]
                  [compojure "1.1.5"]
-                 [hiccup "1.0.3"]]
+                 [hiccup "1.0.3"]
+                 [ring/ring-devel "1.1.8"]]
   :main luncheonate.core)

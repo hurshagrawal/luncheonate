@@ -1,23 +1,10 @@
 (ns luncheonate.core
-    (:use [compojure.core :only (defroutes GET)]
-          [ring.adapter.jetty :as ring]
-          [hiccup.page :only (html5)])
-    (:require [taoensso.carmine :as car]))
-
-;; Templates
-(defn index []
-  (html5
-    [:head
-      [:title "Hello world!"]]
-    [:body
-      [:div#content "Hey there!"]]))
-
-;; Routes
-(defroutes routes
-  (GET "/" [] (index)))
-
+    (:use [ring.adapter.jetty :as ring])
+    (:use ring.middleware.reload)
+    (:require [luncheonate.routes :as routes]))
 
 (defn -main []
-  (run-jetty routes {:port 8080 :join? false}))
+  (run-jetty (wrap-reload #'routes/routes '(luncheonate.core))
+             {:port 8080 :join? false}))
 
 
