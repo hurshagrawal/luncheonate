@@ -5,7 +5,6 @@
 
 
 (defn index []
-  (db (car/set "foo" "barring"))
-  (views/index {:foo (db (car/get "foo"))}))
+  (views/index {}))
 
 

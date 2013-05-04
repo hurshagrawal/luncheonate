@@ -1,9 +1,8 @@
 (ns luncheonate.views.statics
-  (:use [hiccup.page :only (html5)]))
+  (:use [luncheonate.views.layout :only (application)]
+        [hiccup.core :only (html)]
+        [hiccup.page :only (html5 include-css)]))
 
 (defn index [params]
-  (html5
-    [:head
-      [:title "Sup homies"]]
-    [:body
-      [:div#content "sup " (params :foo)]]))
+  (application "Sup homies"
+    [:div.welcome "Welcome to luncheonate!"]))
