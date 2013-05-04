@@ -6,4 +6,4 @@
     [:head
       [:title "Sup homies"]]
     [:body
-      [:div#content "Yo, this is real"]]))
+      [:div#content "sup " (params :foo)]]))

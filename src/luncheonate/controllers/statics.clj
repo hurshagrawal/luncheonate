@@ -1,9 +1,11 @@
 (ns luncheonate.controllers.statics
-  (:require [luncheonate.views.statics :as views]
-            [luncheonate.config.db :only (db)]))
+  (:use luncheonate.config.db)
+  (:require [taoensso.carmine :as car]
+            [luncheonate.views.statics :as views]))
+
 
 (defn index []
-
-  (views/index {}))
+  (db (car/set "foo" "barring"))
+  (views/index {:foo (db (car/get "foo"))}))
 
 
