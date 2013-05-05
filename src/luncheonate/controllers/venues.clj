@@ -1,6 +1,7 @@
 (ns luncheonate.controllers.venues
   (:use luncheonate.config.db)
   (:require [taoensso.carmine :as car]
+            [ring.util.response :as resp]
             [luncheonate.views.venues :as views]
             [clj-http.client :as client]))
 
@@ -27,6 +28,8 @@
 ; Actions
 
 (defn index [params]
-  (let [venues (get-venue-information (params :ll))]
-    (views/index {:venues venues})))
+  (if (contains? params :ll)
+      (views/index {:venues (get-venue-information (params :ll))})
+      (resp/redirect "/404")))
+
 

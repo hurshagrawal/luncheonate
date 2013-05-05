@@ -2,7 +2,7 @@
   (:use [luncheonate.views.layout :only (application)]))
 
 (defn index [params]
-  (application "Your venues"
+  (application "Venues nearby"
     [:ul.venues
       (for [venue (params :venues)]
         [:li.venue
