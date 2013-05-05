@@ -1,6 +1,6 @@
 (ns luncheonate.views.layout
   (:use [hiccup.core :only (html)]
-        [hiccup.page :only (html5 include-css)]))
+        [hiccup.page :only (html5 include-css include-js)]))
 
 (defn application [title & body]
   (html5
@@ -13,7 +13,10 @@
   [:body
     [:div#header
       [:h1.container "Luncheonate!"]]
-    [:div#content.container body]]))
+    [:div#content.container body]
+    [:div.js
+      (include-js "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js")
+      (include-js "/javascripts/index.js")]]))
 
 (defn four-oh-four []
   (application "Page Not Found"

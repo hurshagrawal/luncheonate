@@ -3,7 +3,6 @@
   (:require [taoensso.carmine :as car]
             [luncheonate.views.statics :as views]))
 
-
 (defn index []
   (views/index {}))
 
