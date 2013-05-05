@@ -1,7 +1,7 @@
-(ns luncheonate.views.statics
+(ns luncheonate.views.users
   (:use [luncheonate.views.layout :only (application)]))
 
-(defn index [params]
+(defn new []
   (application "Sup homies"
     [:div.welcome "Welcome to luncheonate!"]
     [:button.js-find-venues "Find some places to eat!"]
