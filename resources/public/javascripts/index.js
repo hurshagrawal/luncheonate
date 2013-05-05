@@ -4,7 +4,10 @@
     var noLocationSupport, onLocationFound;
 
     onLocationFound = function(pos) {
-      return window.location = "/venues?lat=" + pos.coords.latitude + "&long=" + pos.coords.longitude;
+      var latlong;
+
+      latlong = encodeURIComponent("" + pos.coords.latitude + "," + pos.coords.longitude);
+      return window.location = "/venues?ll=" + latlong;
     };
     noLocationSupport = function() {
       return $('#no-location-error').show();

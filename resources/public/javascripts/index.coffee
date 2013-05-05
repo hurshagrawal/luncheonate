@@ -1,7 +1,8 @@
 # Homepage
 $('.js-find-venues').on 'click', ->
   onLocationFound = (pos) ->
-    window.location = "/venues?lat=#{pos.coords.latitude}&long=#{pos.coords.longitude}"
+    latlong = encodeURIComponent("#{pos.coords.latitude},#{pos.coords.longitude}")
+    window.location = "/venues?ll=#{latlong}"
 
   noLocationSupport = ->
     $('#no-location-error').show()

@@ -8,5 +8,6 @@
                  [ring/ring-jetty-adapter "1.1.8"]
                  [compojure "1.1.5"]
                  [hiccup "1.0.3"]
-                 [ring/ring-devel "1.1.8"]]
+                 [ring/ring-devel "1.1.8"]
+                 [clj-http "0.7.2"]]
   :main luncheonate.core)

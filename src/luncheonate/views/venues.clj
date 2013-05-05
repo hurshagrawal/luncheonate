@@ -3,4 +3,9 @@
 
 (defn index [params]
   (application "Your venues"
-    [:div.venues "" params]))
+    [:ul.venues
+      (for [venue (params :venues)]
+        [:li.venue
+          [:div.name
+            (venue :name)]])]))
+
