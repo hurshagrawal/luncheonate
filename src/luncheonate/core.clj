@@ -2,29 +2,30 @@
   (:use [compojure.core :only (defroutes)]
         [ring.adapter.jetty :as ring])
   (:use ring.middleware.reload)
-  (:require [compojure.route :as route]
+  (:require [ring.middleware.session :as session]
+            [ring.middleware.session.cookie :as cookie]
             [compojure.handler :as handler]
-            [luncheonate.routes :as routing]
-            [luncheonate.views.layout :as layout]))
+            [luncheonate.routes :as routes]))
 
 
-; Set up routes
-(defroutes routes
-  routing/routes
-  (route/resources "/")
-  (route/not-found (layout/four-oh-four)))
+; Options
+(def cookie-key "c0079f5a9ef363e7c330af9d59888e0c1064363cae63b7e")
 
-(def application
-  (handler/site routes))
+(def app-options
+  {:session {:store (cookie/cookie-store {:key cookie-key})
+             :cookie-name "luncheonate-session"}})
+
+(def app
+  (handler/site routes/routes app-options))
 
 ; Start application with reload on in development
 (defn start-development []
-  (run-jetty (wrap-reload #'application '(luncheonate.core))
+  (run-jetty (wrap-reload #'app '(luncheonate.core))
              {:port 8080 :join? false}))
 
 (defn start []
   (let [port (Integer/parseInt (System/getenv "PORT"))]
-       (run-jetty application {:port port :join? false})))
+       (run-jetty app {:port port :join? false})))
 
 ; Initialize application
 (defn -main []

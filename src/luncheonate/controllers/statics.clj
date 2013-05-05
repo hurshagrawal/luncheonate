@@ -4,6 +4,6 @@
             [luncheonate.views.statics :as views]))
 
 (defn index []
-  (views/index {}))
+  (views/index))
 
 
