@@ -8,19 +8,26 @@
             [luncheonate.views.layout :as layout]))
 
 
+; Set up routes
 (defroutes routes
   routing/routes
   (route/resources "/")
   (route/not-found (layout/four-oh-four)))
 
-(def application (handler/site routes))
+(def application
+  (handler/site routes))
 
-(defn start [port]
+; Start application with reload on in development
+(defn start-development []
   (run-jetty (wrap-reload #'application '(luncheonate.core))
-             {:port port :join? false}))
+             {:port 8080 :join? false}))
 
+(defn start []
+  (let [port (Integer/parseInt (System/getenv "PORT"))]
+       (run-jetty application {:port port :join? false})))
+
+; Initialize application
 (defn -main []
-  (let [port (Integer/parseInt
-               (or (System/getenv "PORT") "8080"))]
-  (start port)))
-
+  (if (= (System/getenv "RING_ENV") "production")
+      (start)
+      (start-development)))
