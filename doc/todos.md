@@ -5,5 +5,4 @@ X get location and get venue information
 - "Ignore this" button
 - Adding additional venues
 - Voting system?
--
 

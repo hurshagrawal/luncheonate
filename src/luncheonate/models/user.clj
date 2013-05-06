@@ -9,7 +9,7 @@
 
 (def alphanumeric "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
 (defn get-random-id []
-  (apply str (repeatedly 10 #(rand-nth alphanumeric))))
+  (apply str (repeatedly 20 #(rand-nth alphanumeric))))
 
 ; Public
 
@@ -17,6 +17,7 @@
   (db (car/hget users-key
                (db (car/hget email-lookup-key email)))))
 
+; TODO - use bcrypt and make this a little more robust
 (defn authenticate [user password]
   (= (user :password) password))
 
