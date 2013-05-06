@@ -7,22 +7,21 @@
 ; Helper functions
 
 (defn sign-in [session user] ())
+(defn sign-in-and-redirect [session user path]
+  (sign-in session user)
+  (resp/redirect path))
 
 ; Actions
 
 (defn new [session]
   (views/new))
 
-    (defn create [session params]
-      (let [user (user/find-by-email (params :email))]
-        (if user
-            (if (user/authenticate user (params :password))
-                (do (sign-in session user)
-                    (resp/redirect "/home?signed-in=true"))
-                (resp/redirect "/?error=incorrect-password"))
-            (let [new-user (user/create params)]
-              (sign-in session new-user)
-              (resp/redirect "/home?new-user=true")))))
+(defn create [session params]
+  (if-let [user (user/find-by-email (params :email))]
+    (if (user/authenticate user (params :password))
+        (sign-in-and-redirect session user "/home?signed-in=true")
+        (resp/redirect "/?error=incorrect-password"))
+    (sign-in-and-redirect session (user/create params) "/home?new-user=true")))
 
 (defn home []
   ())
