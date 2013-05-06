@@ -6,7 +6,7 @@
             [luncheonate.controllers.venues :as venues]))
 
 (defroutes routes
-  (GET "/" [] (users/new))
+  (GET "/" {session :session} (users/new session))
   (POST "/users"
         {session :session params :params}
         (users/create session params))
