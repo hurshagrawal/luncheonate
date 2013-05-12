@@ -1,11 +1,18 @@
 (ns luncheonate.controllers.venues
-  (:use luncheonate.config.db)
-  (:require [taoensso.carmine :as car]
-            [ring.util.response :as resp]
+  (:require [ring.util.response :as resp]
             [luncheonate.views.venues :as views]
             [clj-http.client :as client]))
 
-; Helper functions
+(declare get-venue-information)
+
+
+
+(defn index [params]
+  (if (contains? params :ll)
+      (views/index {:venues (get-venue-information (params :ll))})
+      (resp/redirect "/404")))
+
+
 
 (def venues-url "https://api.foursquare.com/v2/venues/explore")
 (def foursq-client-id "3ITISTF5LESZGZVSDBCWLSJEVNJUHK2NARZ4YKNO0E1ENMZU")
@@ -23,13 +30,4 @@
                                 :client_secret foursq-client-secret}})]
     (map #(% :venue) ; get the relevant data from the JSON response
          ((first (((res :body) :response) :groups)) :items))))
-
-
-; Actions
-
-(defn index [params]
-  (if (contains? params :ll)
-      (views/index {:venues (get-venue-information (params :ll))})
-      (resp/redirect "/404")))
-
 

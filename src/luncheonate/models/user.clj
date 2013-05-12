@@ -1,27 +1,19 @@
 (ns luncheonate.models.user
   (:use luncheonate.config.db)
-  (:require [taoensso.carmine :as car]))
+  (:use korma.core))
 
-; Private
+(defentity user
+  (table :users)
+  (entity-fields :id :name))
 
-(def users-key "users")
-(def email-lookup-key "users::lookup::email")
+(def authenticate [user password]
+  (= (:password user) password))
 
-(def alphanumeric "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890")
-(defn get-random-id []
-  (apply str (repeatedly 20 #(rand-nth alphanumeric))))
+(def find-by-email [email]
+  (select user
+    (where {:email email})))
 
-; Public
-
-(defn find-by-email [email]
-  (db (car/hget users-key
-               (db (car/hget email-lookup-key email)))))
-
-; TODO - use bcrypt and make this a little more robust
-(defn authenticate [user password]
-  (= (user :password) password))
-
-(defn create [attributes]
-  (let [user-id (get-random-id)]
-    (db (car/hset users-key user-id attributes))
-    (db (car/hset email-lookup-key (attributes :email) user-id))))
+(def create [params]
+  (insert user
+    (values {:email (:email params)
+             :password (:password params)})))

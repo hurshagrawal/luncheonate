@@ -5,7 +5,6 @@
             [luncheonate.views.users :as views]))
 
 ; Helper functions
-
 (defn sign-in [session user] ())
 (defn sign-in-and-redirect [session user path]
   (sign-in session user)
@@ -17,8 +16,8 @@
   (views/new))
 
 (defn create [session params]
-  (if-let [user (user/find-by-email (params :email))]
-    (if (user/authenticate user (params :password))
+  (if-let [user (user/find-by-email (:email params))]
+    (if (user/authenticate user (:password params))
         (sign-in-and-redirect session user "/home?signed-in=true")
         (resp/redirect "/?error=incorrect-password"))
     (sign-in-and-redirect session (user/create params) "/home?new-user=true")))
