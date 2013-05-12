@@ -1,5 +1,4 @@
 (ns luncheonate.controllers.users
-  (:use luncheonate.config.db)
   (:require [ring.util.response :as resp]
             [luncheonate.models.user :as user]
             [luncheonate.views.users :as views]))
