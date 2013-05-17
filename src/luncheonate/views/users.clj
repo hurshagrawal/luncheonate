@@ -2,7 +2,7 @@
   (:use [luncheonate.views.layout :only (application)]
         [hiccup.form]))
 
-(defn new []
+(defn new [params]
   (application "Sup homies"
     [:div.welcome
       [:h3 "Welcome to luncheonate!"]
@@ -11,7 +11,8 @@
       (form-to [:post "/users"]
         (text-field {:placeholder "joe@gmail.com"} :email)
         (password-field {:placeholder "**********"} :password)
-        (submit-button "Sign up or sign in"))]))
+        (submit-button "Sign up or sign in"))]
+    [:div nil params]))
 
     ;[:button.js-find-venues "Find some places to eat!"]
     ;[:div#no-location-error

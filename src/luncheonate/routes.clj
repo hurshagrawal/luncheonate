@@ -6,15 +6,10 @@
             [luncheonate.controllers.venues :as venues]))
 
 (defroutes routes
-  (GET "/" {session :session} (users/new session))
-  (POST "/users"
-        {session :session params :params}
-        (users/create session params))
-  (GET "/venues"
-       {params :params}
-       (venues/index params))
+  (GET "/" req (users/new req))
+  (POST "/users" req (users/create req))
+  (GET "/venues" req (venues/index))
   (route/resources "/")
   (route/not-found (layout/four-oh-four)))
-
 
 
