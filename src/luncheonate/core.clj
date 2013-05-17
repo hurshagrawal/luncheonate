@@ -9,7 +9,7 @@
 
 
 ; Options
-(def cookie-key "c0079f5a9ef363e7c330af9d59888e0c1064363cae63b7e")
+(def cookie-key "73c8eaa74e8707fa")
 
 (def app-options
   {:session {:store (cookie/cookie-store {:key cookie-key})
