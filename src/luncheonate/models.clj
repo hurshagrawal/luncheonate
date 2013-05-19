@@ -41,6 +41,11 @@
   (many-to-many user :saved_venues {:lfk :venue_id
                                      :rfk :user_id}))
 
+(defn get-venues-for-user [user]
+  (select venue
+          (join saved-venue (= :saved_venues.venue_id :id))
+          (where {:saved_venues.user_id (:id user)})))
+
 ;; Saved Venue
 (defentity saved-venue
   (table :saved_venues)

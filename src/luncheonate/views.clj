@@ -3,7 +3,7 @@
         [hiccup.core :only (html)]
         [hiccup.page :only (html5 include-css include-js)]))
 
-(defn layout [title & body]
+(defn layout [params title & body]
   (html5
     [:head
       [:meta {:charset "utf-8"}]
@@ -14,13 +14,17 @@
   [:body
     [:div#header
       [:h1.container "Luncheonate!"]]
+      (if-let [user (:user params)]
+        [:div.user-card
+         "You're logged in as"
+         [:h2 (:email user)]])
     [:div#content.container body]
     [:div.js
       (include-js "//ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js")
       (include-js "/javascripts/index.js")]]))
 
 (defn new-users [params]
-  (layout "Sup homies"
+  (layout params "Sup homies"
     [:div.welcome
       [:h3 "Welcome to luncheonate!"]
       [:h4 "Sign in or sign up to continue"]]
@@ -32,10 +36,7 @@
     [:div nil params]))
 
 (defn home [params]
-  (layout "Venues nearby"
-    [:div.user-card
-     "You're logged in as"
-     [:h2 (-> params :user :email)]]
+  (layout params "Venues nearby"
     [:ul.venues
       (for [venue (-> params :user :venues)]
         [:li.venue
@@ -43,6 +44,6 @@
             (venue :name)]])]))
 
 (defn four-oh-four []
-  (layout "Page Not Found"
+  (layout {} "Page Not Found"
                [:div#four-oh-four "The page you requested could not be found"]))
 

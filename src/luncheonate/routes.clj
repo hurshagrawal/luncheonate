@@ -1,5 +1,5 @@
 (ns luncheonate.routes
-  (:use [compojure.core :only (defroutes GET POST ANY)])
+  (:use debug-repl.debug-repl)
   (:require [compojure.route :as route]
             [compojure.core :as core]
             [ring.util.response :as resp]
@@ -15,14 +15,15 @@
 (defn sign-in-and-redirect [req user path]
   (assoc (resp/redirect path)
          :session
-         (assoc (:session req)
-                :user-id
-                (:id user))))
+         (assoc (:session req) :user-id (:id user))))
 
 (defn sign-out [req]
   (assoc (resp/redirect "/")
          :session
          (dissoc (:session req) :user-id)))
+
+(defn current-user [req]
+  (models/find-user {:id (-> req :session :user-id)}))
 
 (defn get-venue-information [ll]
   "Query foursquare to get venue JSON"
@@ -47,9 +48,10 @@
                             (-> req :params :email))))
     (sign-in-and-redirect req (models/create-user (:params req)) "/")))
 
-(defn home [req]
-  (let [user (models/find-user {:id (-> req :session :user-id)} [models/venue])]
-    (views/home {:user user})))
+(defn home [user req]
+  (views/home {:user (assoc user
+                            :venues
+                            (models/get-venues-for-user user))}))
 
 (defn venues-nearby [req]
   (if (-> req :params :ll)
@@ -57,18 +59,21 @@
       (resp/redirect "/404")))
 
 ;; Routes
-(defroutes signed-in-routes
-  (GET "/" req (home req))
-  (GET "/signout" req (sign-out req)))
+(defn signed-in-routes [user, req]
+  (core/routes
+    (core/GET "/" [] (home user req))
+    (core/GET "/signout" [] (sign-out req))))
 
-(defroutes signed-out-routes
-  (GET "/" req (views/new-users req))
-  (POST "/users" req (create-user req)))
+(defn signed-out-routes [req]
+  (core/routes
+    (core/GET "/" [] (views/new-users req))
+    (core/POST "/users" [] (create-user req))))
 
-(defroutes routes
-  (ANY "*" req (if (-> req :session :user-id)
-                   signed-in-routes
-                   signed-out-routes))
-  (route/resources "/")
-  (route/not-found (views/four-oh-four)))
+(def routes
+  (core/routes
+    (core/ANY "*" req (if-let [user (current-user req)]
+                        (partial signed-in-routes user)
+                        signed-out-routes))
+    (route/resources "/")
+    (route/not-found (views/four-oh-four))))
 
