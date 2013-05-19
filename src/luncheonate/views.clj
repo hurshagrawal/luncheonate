@@ -31,10 +31,13 @@
         (submit-button "Sign up or sign in"))]
     [:div nil params]))
 
-(defn venues-list [params]
+(defn home [params]
   (layout "Venues nearby"
+    [:div.user-card
+     "You're logged in as"
+     [:h2 (-> params :user :email)]]
     [:ul.venues
-      (for [venue (params :venues)]
+      (for [venue (-> params :user :venues)]
         [:li.venue
           [:div.name
             (venue :name)]])]))

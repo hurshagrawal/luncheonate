@@ -36,24 +36,29 @@
                                 :client_id foursq-client-id
                                 :client_secret foursq-client-secret}})]
     (map #(:venue %) ; get the relevant data from the JSON response
-         (:items (first (:groups (:response (:body res))))))))
+         (-> res :body :response :groups first :items))))
 
 (defn create-user [req]
   (if-let [user (models/find-user
                   (select-keys (:params req) [:email]))]
-    (if (models/authenticate-user user (:password (:params req)))
+    (if (models/authenticate-user user (-> req :params :password))
         (sign-in-and-redirect req user "/?signed-in=true")
-        (resp/redirect "/?error=incorrect-password"))
+        (resp/redirect (str "/?error=incorrect-password&email="
+                            (-> req :params :email))))
     (sign-in-and-redirect req (models/create-user (:params req)) "/")))
 
-(defn venue-list [req]
-  (if (:ll (:params req))
-      (views/venues-list {:venues (get-venue-information (:ll req))})
+(defn home [req]
+  (let [user (models/find-user {:id (-> req :session :user-id)} [models/venue])]
+    (views/home {:user user})))
+
+(defn venues-nearby [req]
+  (if (-> req :params :ll)
+      (views/home {:venues (get-venue-information (:ll req))})
       (resp/redirect "/404")))
 
 ;; Routes
 (defroutes signed-in-routes
-  (GET "/" req (venue-list req))
+  (GET "/" req (home req))
   (GET "/signout" req (sign-out req)))
 
 (defroutes signed-out-routes
@@ -61,7 +66,7 @@
   (POST "/users" req (create-user req)))
 
 (defroutes routes
-  (ANY "*" req (if (:user-id (:session req))
+  (ANY "*" req (if (-> req :session :user-id)
                    signed-in-routes
                    signed-out-routes))
   (route/resources "/")

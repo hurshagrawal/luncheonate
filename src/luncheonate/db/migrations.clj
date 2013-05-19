@@ -27,7 +27,7 @@
 
 (defmigration add-saved-venues-table
   (up [] (create
-           (tbl :saved-venues
+           (tbl :saved_venues
                 (integer :venue_id :not-null)
                 (integer :user_id :not-null))))
   (down [] (drop (table :saved-venues))))
@@ -36,4 +36,10 @@
   (open-global config/config)
   (print "Migrating...") (flush)
   (migrate)
+  (println "Done."))
+
+(defn rollback-migrations []
+  (open-global config/config)
+  (print "Rolling back...") (flush)
+  (rollback)
   (println "Done."))
